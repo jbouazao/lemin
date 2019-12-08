@@ -6,7 +6,7 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2019/12/08 14:06:14 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2019/12/08 18:30:14 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int				hash_name(char *name)
 	hash = 0;
 	while (name[i])
 		hash = hash * 63 + name[i++];
-	hash = hash % COMPLEX;//consider making tab_size big enough so we have distinct hashes
+	hash = hash % COMPLEX;
 	return (hash);
 }
 
@@ -82,13 +82,13 @@ t_rooms				**mk_hash_tab(t_rooms *rm)
 		{
 			temp_hash = hash_name(temp->name);
 			if (hash_tab[temp_hash] == NULL)
-				hash_tab[temp_hash] = node_dup_with_name(temp->name);
+				hash_tab[temp_hash] = node_dup_with_name(temp);
 			else
 			{
 				temp1 = hash_tab[temp_hash];
 				while (temp1->next != NULL)
 					temp1 = temp1->next;
-				temp1->next = node_dup_with_name(temp->name);
+				temp1->next = node_dup_with_name(temp);
 			}
 			temp = temp->next;
 		}

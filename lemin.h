@@ -6,7 +6,7 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/08 14:00:23 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2019/12/08 17:27:32 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void				prnt_rms_lst(t_rooms *rm);
 int					add_to_list(t_rooms **rm, char *line, char c);
 void				free_list(t_rooms **rm);
 int					node_list_count(t_rooms *rm);
-t_rooms				*node_dup_with_name(char *name);
+t_rooms				*node_dup_with_name(t_rooms *name);
 /*
 ** COMMENT
 */

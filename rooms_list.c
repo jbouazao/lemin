@@ -6,11 +6,63 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/29 18:38:51 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/07 13:10:42 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2019/12/08 17:57:32 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
+
+static int	creat_lnk_lst(t_rooms **rm)
+{
+	t_rooms	*elmnt;
+
+	elmnt = (t_rooms *)ft_memalloc(sizeof(t_rooms));
+	elmnt->name = (*rm)->name;
+	elmnt->rm = (*rm)->rm;
+	elmnt->next = NULL;
+	return (1);
+}
+
+static int	add_lnk_lst(t_rooms **rm, char *line, char c)
+{
+	t_rooms	*temp;
+	t_rooms	*node;
+
+	temp = *rm;
+	node = (t_rooms *)ft_memalloc(sizeof(t_rooms));
+	node->name = NULL;
+	node->next = NULL;
+	node->rm = c;
+	while (temp->next != NULL)
+		temp = temp->next;
+	if (!(node->name = valid_room(line)))
+	{
+		ft_printf("error: room is not valid\n");
+		ft_memdel((void **)&node);
+		return (0);
+	}
+	temp->next = node;
+	return (1);
+}
+
+int			add_lnkto_list(t_rooms **rm, char *line, char c)
+{
+	if (!(*rm))
+	{
+		if (!creat_lnk_lst(rm))
+		{
+			ft_strdel(&line);
+			return (0);
+		}
+	}
+	else if (!add_lnk_lst(rm, line, c))
+	{
+		ft_strdel(&line);
+		free_list(rm);
+		return (0);
+	}
+	return (1);
+}
 
 static int	creat_rm_lst(t_rooms **rm, char *line, char c)
 {
@@ -96,7 +148,7 @@ void		free_list(t_rooms **rm)
 	}
 }
 
-t_rooms		*node_dup_with_name(char *name)
+t_rooms		*node_dup_with_name(t_rooms *temp)
 {//dupped not freed yet 
 	t_rooms		*dupped;
 
@@ -107,13 +159,13 @@ t_rooms		*node_dup_with_name(char *name)
 	}
 	else
 	{
-		if (name == NULL)
+		if (temp->name == NULL)
 		{
 			ft_memdel((void *)dupped);
 			return (NULL);
 		}
-		dupped->name = ft_strdup(name);
-		dupped->rm = 0;
+		dupped->name = ft_strdup(temp->name);
+		dupped->rm = temp->rm;
 		dupped->next = NULL;
 	}
 	return (dupped);
