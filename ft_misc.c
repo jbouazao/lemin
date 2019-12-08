@@ -6,7 +6,7 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2019/12/07 13:38:03 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2019/12/08 14:06:14 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_rooms				**mk_hash_tab(t_rooms *rm)
 	int		temp_hash;
 	t_rooms	*temp1;
 
-	tab_size = node_list_count(rm);
+	tab_size = rm->sz_lst;
 	temp = rm;
 	temp_hash = 0;
 	if (!tab_size)
@@ -70,10 +70,10 @@ t_rooms				**mk_hash_tab(t_rooms *rm)
 	else
 	{
 		//this whole else will be in another function
-		hash_tab = (t_rooms **)ft_memalloc(sizeof(t_rooms *) * tab_size);
+		hash_tab = (t_rooms **)ft_memalloc(sizeof(t_rooms *) * COMPLEX);
 		//hash_tab is not freed yet
 		int i = 0;
-		while (i < tab_size)
+		while (i < COMPLEX)
 		{
 			hash_tab[i] = (t_rooms *)ft_memalloc(sizeof(t_rooms));
 			hash_tab[i++] = NULL;
@@ -92,7 +92,8 @@ t_rooms				**mk_hash_tab(t_rooms *rm)
 			}
 			temp = temp->next;
 		}
-		print_hash_tab(hash_tab, tab_size);
+		free_list(&rm);
+		// print_hash_tab(hash_tab, tab_size);
 	}
 	return (hash_tab);
 }
@@ -140,27 +141,63 @@ int		link_is_valid(char *line)
 	else
 		return (0);
 }
+
+void	add_link(t_rooms **element1, t_rooms **element2)
+{
+	// should make functions like the add_to_list for links
+}
+
 //should edit
-void	parse_link(t_rooms **hash_tab, char *line)
+int		parse_link(t_rooms **hash_tab, char *line)
 {
 	int		i;
-	char	*temp;
+	char	**splitted;
+	t_rooms	**it_hash;
+	int		hash1;
+	int		hash2;
 
 	i = 0;
-	while (line[i] && line[i] != ' ')
-		i++;
-	temp = ft_strsub(line, 0, i);//took the first name and next i should compare with the list of each instance of the hashtable
-	// hash_tab[hash_name(temp)] == ;
+	it_hash = hash_tab;
+	splitted = ft_strsplit(line, '-');
+	hash1 = hash_name(splitted[0]);
+	hash2 = hash_name(splitted[1]);
+	//temp not freed yet//took the first name and
+	//after that i should compare with the list of each instance of the hashtable
+	while (it_hash[hash1])
+	{
+		if (!(ft_strcmp(it_hash[hash1]->name, splitted[0])))
+		{
+			while (it_hash[hash2])
+			{
+				if (!(ft_strcmp(it_hash[hash2]->name, splitted[1])))
+				{
+					add_link(&it_hash[hash1], &it_hash[hash2]);
+					break ;
+				}
+				it_hash[hash2] = it_hash[hash2]->next;
+				if (!it_hash[hash2])
+					return (0);
+			}
+			break ;
+		}
+		it_hash[hash1] = it_hash[hash1]->next;
+		if (!it_hash[hash1])
+			return (0);
+	}
+	return (1);
 }
 //should edit
 int		get_links(t_rooms **hash_tab, char **line)
 {
 	if (link_is_valid(*line))
-		parse_link(hash_tab, *line);
+		if (!(parse_link(hash_tab, *line)))
+			return (0);
 	ft_strdel(line);
 	while (get_next_line(0, line) > 0)
 	{
-
+		if (link_is_valid(*line))
+			if (!(parse_link(hash_tab, *line)))
+				return (0);
 		ft_strdel(line);
 	}
 	//should free the line

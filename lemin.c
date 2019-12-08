@@ -6,7 +6,7 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:31 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/06 15:32:01 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2019/12/08 13:53:34 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,11 @@ int		get_rms_lnks(char *line, t_rooms **rm)
 		else if (link_is_valid(line))
 		{
 			//should edit-------------
+			if (!((*rm)->sz_lst = node_list_count(*rm)))
+			{
+				ft_printf("list is empty\n");
+				return (0);
+			}
 			get_links(mk_hash_tab(*rm), &line);
 			return (1);
 			//------------------------
@@ -142,8 +147,6 @@ int		get_data(t_s *dt, char *line)
 	// }
 	//-----------------------------
 	ft_printf("count1 = %d\n", node_list_count(rm));
-	prnt_rms_lst(rm);
-	free_list(&rm);
 	return (1);
 }
 

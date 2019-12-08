@@ -6,7 +6,7 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/07 13:09:28 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2019/12/08 14:00:23 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct		s_rooms
 	char			*name;
 	struct s_rooms	*next;
 	char			rm;
+	int				sz_lst;
 	t_links			*links;
 
 }					t_rooms;
@@ -62,5 +63,6 @@ int					get_links(t_rooms **hash_tab, char **line);
 int					hash_name(char *name);
 t_rooms				**mk_hash_tab(t_rooms *rm);
 void				print_hash_tab(t_rooms **hash_tab, int list_size);
-void				parse_link(t_rooms **hash_tab, char *line);
+int					parse_link(t_rooms **hash_tab, char *line);
+void				add_link(t_rooms **element1, t_rooms **element2);
 #endif
