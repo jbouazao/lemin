@@ -54,7 +54,7 @@ int				hash_name(char *name)
 	return (hash);
 }
 
-t_rooms				**mk_hash_tab(t_rooms *rm)
+t_rooms				**mk_hash_tab(t_rooms **rm)
 {
 	int		tab_size;
 	t_rooms	**hash_tab;
@@ -62,8 +62,8 @@ t_rooms				**mk_hash_tab(t_rooms *rm)
 	int		temp_hash;
 	t_rooms	*temp1;
 
-	tab_size = rm->sz_lst;
-	temp = rm;
+	tab_size = (*rm)->sz_lst;
+	temp = (*rm);
 	temp_hash = 0;
 	if (!tab_size)
 		return (NULL);
@@ -92,27 +92,34 @@ t_rooms				**mk_hash_tab(t_rooms *rm)
 			}
 			temp = temp->next;
 		}
-		free_list(&rm);
+		free_list(rm);
 		// print_hash_tab(hash_tab, tab_size);
 	}
 	return (hash_tab);
 }
 
-void			print_hash_tab(t_rooms **hash_tab, int list_size)
+void			print_hash_tab(t_rooms **hash_tab)
 {
 	int		i;
-	t_rooms	*temp;
+	t_rooms	*temp_hash_tab;
+	t_links	*temp_links;
 
 	i = 0;
-	while (i < list_size)
+	while (i < COMPLEX)
 	{
-		temp = hash_tab[i];
+		temp_hash_tab = hash_tab[i];
 		ft_printf("element %d:", i);
-		if (temp)
-			while (temp)
+		if (temp_hash_tab)
+			while (temp_hash_tab)
 			{
-				ft_printf(" %s => ", temp->name);
-				temp = temp->next;
+				ft_printf(" %s => ", temp_hash_tab->name);
+				if (temp_hash_tab->links)
+					while (temp_hash_tab->links)
+					{
+						ft_printf("link: %s\n", temp_hash_tab->links->link);
+						temp_hash_tab->links = temp_hash_tab->links->next;
+					}
+				temp_hash_tab = temp_hash_tab->next;
 			}
 		else
 			ft_printf(" NULL");
@@ -124,19 +131,22 @@ void			print_hash_tab(t_rooms **hash_tab, int list_size)
 int		link_is_valid(char *line)
 {
 	int		i;
+	int		count;
 
 	i = 0;
-	if (line == NULL || line[0] == 'L' || line[0] == '#')
+	count = 0;
+	if (line == NULL)
 	{
 		ft_printf("error because of 'L' or line is NULL\n");
 		return (0);
 	}
-	while (line[i] && line[i] != ' ')
-		i++;
-	i += (line[i] == '-') ? 1 : 0;
-	while (line[i] && line[i] != ' ')
-		i++;
-	if (ft_strlen(line) == (size_t)i)
+	while (line[i])
+	{
+		count += (line[i] == '-') ? 1 : 0;
+		if (line[i] == ' ' || line[i++] == '\t')
+			return (0);
+	}
+	if (count == 1)
 		return (1);
 	else
 		return (0);
@@ -144,60 +154,77 @@ int		link_is_valid(char *line)
 
 void	add_link(t_rooms **element1, t_rooms **element2)
 {
-	// should make functions like the add_to_list for links
+	if ((*element1)->links == NULL)
+		(*element1)->links = creat_lnk_lst(element2);
+	else
+		add_lnk_lst(element2, &(*element1)->links);
+	if ((*element2)->links == NULL)
+		(*element2)->links = creat_lnk_lst(element1);
+	else
+		add_lnk_lst(element1, &(*element2)->links);
 }
 
-//should edit
+//see here
 int		parse_link(t_rooms **hash_tab, char *line)
 {
 	int		i;
 	char	**splitted;
-	t_rooms	**it_hash;
+	t_rooms	*it_hash1;
+	t_rooms	*it_hash2;
 	int		hash1;
 	int		hash2;
 
 	i = 0;
-	it_hash = hash_tab;
 	splitted = ft_strsplit(line, '-');
+	//not freed yet
 	hash1 = hash_name(splitted[0]);
 	hash2 = hash_name(splitted[1]);
-	//temp not freed yet//took the first name and
-	//after that i should compare with the list of each instance of the hashtable
-	while (it_hash[hash1])
+	it_hash1 = hash_tab[hash1];
+	it_hash2 = hash_tab[hash2];
+	//temp not freed yet
+	while (it_hash1)
 	{
-		if (!(ft_strcmp(it_hash[hash1]->name, splitted[0])))
+		if (!(ft_strcmp(it_hash1->name, splitted[0])))
 		{
-			while (it_hash[hash2])
+			while (it_hash2)
 			{
-				if (!(ft_strcmp(it_hash[hash2]->name, splitted[1])))
+				if (!(ft_strcmp(it_hash2->name, splitted[1])))
 				{
-					add_link(&it_hash[hash1], &it_hash[hash2]);
+					add_link(&it_hash1, &it_hash2);
 					break ;
 				}
-				it_hash[hash2] = it_hash[hash2]->next;
-				if (!it_hash[hash2])
+				it_hash2 = it_hash2->next;
+				if (!it_hash2)
 					return (0);
 			}
 			break ;
 		}
-		it_hash[hash1] = it_hash[hash1]->next;
-		if (!it_hash[hash1])
+		it_hash1 = it_hash1->next;
+		if (!it_hash1)
 			return (0);
 	}
 	return (1);
 }
-//should edit
+//see here
 int		get_links(t_rooms **hash_tab, char **line)
 {
 	if (link_is_valid(*line))
+	{
 		if (!(parse_link(hash_tab, *line)))
 			return (0);
+	}
+	else
+		return (0);
 	ft_strdel(line);
 	while (get_next_line(0, line) > 0)
 	{
 		if (link_is_valid(*line))
+		{
 			if (!(parse_link(hash_tab, *line)))
 				return (0);
+		}
+		else
+			return (0);
 		ft_strdel(line);
 	}
 	//should free the line

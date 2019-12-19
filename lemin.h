@@ -61,8 +61,10 @@ int					get_links(t_rooms **hash_tab, char **line);
 ** HASH_TABLE
 */
 int					hash_name(char *name);
-t_rooms				**mk_hash_tab(t_rooms *rm);
-void				print_hash_tab(t_rooms **hash_tab, int list_size);
+t_rooms				**mk_hash_tab(t_rooms **rm);
+void				print_hash_tab(t_rooms **hash_tab);
 int					parse_link(t_rooms **hash_tab, char *line);
 void				add_link(t_rooms **element1, t_rooms **element2);
+t_links				*creat_lnk_lst(t_rooms **rm);
+void				add_lnk_lst(t_rooms **rm, t_links **lnk_lst);
 #endif

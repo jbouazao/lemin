@@ -49,6 +49,7 @@ int		get_rms_lnks(char *line, t_rooms **rm)
 {
 	char	c;
 	char	*temp;
+	t_rooms	**ht;
 
 	while (get_next_line(0, &line) > 0 && (c = 'r'))
 	{
@@ -75,7 +76,9 @@ int		get_rms_lnks(char *line, t_rooms **rm)
 				ft_printf("list is empty\n");
 				return (0);
 			}
-			get_links(mk_hash_tab(*rm), &line);
+			ht = mk_hash_tab(rm);
+			get_links(ht, &line);
+			print_hash_tab(ht);
 			return (1);
 			//------------------------
 		}
@@ -146,7 +149,7 @@ int		get_data(t_s *dt, char *line)
 	// 	ft_strdel(&line);
 	// }
 	//-----------------------------
-	ft_printf("count1 = %d\n", node_list_count(rm));
+	// ft_printf("count1 = %d\n", node_list_count(rm));
 	return (1);
 }
 

@@ -12,58 +12,33 @@
 
 #include "lemin.h"
 
-static int	creat_lnk_lst(t_rooms **rm)
+//should redo this
+t_links		*creat_lnk_lst(t_rooms **rm)
 {
-	t_rooms	*elmnt;
-
-	elmnt = (t_rooms *)ft_memalloc(sizeof(t_rooms));
-	elmnt->name = (*rm)->name;
-	elmnt->rm = (*rm)->rm;
+	t_links	*elmnt;
+	
+	//not freed yet
+	elmnt = (t_links *)ft_memalloc(sizeof(t_links));
+	elmnt->link = (*rm)->name;
 	elmnt->next = NULL;
-	return (1);
+	return (elmnt);
 }
 
-static int	add_lnk_lst(t_rooms **rm, char *line, char c)
+void		add_lnk_lst(t_rooms **rm, t_links **lnk_lst)
 {
-	t_rooms	*temp;
-	t_rooms	*node;
+	t_links	*temp;
+	t_links	*node;
 
-	temp = *rm;
-	node = (t_rooms *)ft_memalloc(sizeof(t_rooms));
-	node->name = NULL;
+	temp = *lnk_lst;
+	//not freed yet
+	node = (t_links *)ft_memalloc(sizeof(t_links));
+	node->link = (*rm)->name;
 	node->next = NULL;
-	node->rm = c;
 	while (temp->next != NULL)
 		temp = temp->next;
-	if (!(node->name = valid_room(line)))
-	{
-		ft_printf("error: room is not valid\n");
-		ft_memdel((void **)&node);
-		return (0);
-	}
 	temp->next = node;
-	return (1);
 }
-
-int			add_lnkto_list(t_rooms **rm, char *line, char c)
-{
-	if (!(*rm))
-	{
-		if (!creat_lnk_lst(rm))
-		{
-			ft_strdel(&line);
-			return (0);
-		}
-	}
-	else if (!add_lnk_lst(rm, line, c))
-	{
-		ft_strdel(&line);
-		free_list(rm);
-		return (0);
-	}
-	return (1);
-}
-
+//-----------------------------------------------------------------------
 static int	creat_rm_lst(t_rooms **rm, char *line, char c)
 {
 	(*rm) = (t_rooms *)ft_memalloc(sizeof(t_rooms));
