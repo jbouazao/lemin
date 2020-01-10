@@ -45,12 +45,13 @@ int		check_num_ants(char *line, t_s *dt)
 	return (1);
 }
 
-int		get_rms_lnks(char *line, t_rooms **rm)
+t_rooms	**get_rms_lnks(char *line, t_rooms **rm)
 {
 	char	c;
 	char	*temp;
 	t_rooms	**ht;
 
+	ht = NULL;
 	while (get_next_line(0, &line) > 0 && (c = 'r'))
 	{
 		if (!ft_strcmp(line, "##start") || !ft_strcmp(line, "##end"))
@@ -58,7 +59,7 @@ int		get_rms_lnks(char *line, t_rooms **rm)
 			ft_strdel(&line);
 			get_next_line(0, &line);
 			if (!add_to_list(rm, line, c = line[2]))
-				return (0);
+				return (ht);
 		}
 		else if (line[0] == '#')
 			ft_printf("comment\n");
@@ -66,7 +67,7 @@ int		get_rms_lnks(char *line, t_rooms **rm)
 		{
 			ft_strdel(&temp);
 			if (!add_to_list(rm, line, c))
-				return (0);
+				return (ht);
 		}
 		else if (link_is_valid(line))
 		{
@@ -74,19 +75,23 @@ int		get_rms_lnks(char *line, t_rooms **rm)
 			if (!((*rm)->sz_lst = node_list_count(*rm)))
 			{
 				ft_printf("list is empty\n");
-				return (0);
+				return (ht);
 			}
 			ht = mk_hash_tab(rm);
-			get_links(ht, &line);
-			print_hash_tab(ht);
-			return (1);
+			if (!get_links(ht, &line))
+			{
+				//should free hashtable
+				return (NULL);
+			}
+			// print_hash_tab(ht);
+			return (ht);
 			//------------------------
 		}
 		else
-			return (0);
+			return (ht);
 		ft_strdel(&line);
 	}
-	return (1);
+	return (ht);
 }
 
 // int		get_rms_lnks1(char *line, t_rooms **rm)
@@ -126,13 +131,15 @@ int		get_data(t_s *dt, char *line)
 {
 	t_rooms	*rm;
 	int		temp;
+	t_rooms	**ht;
 
 	rm = NULL;
 	temp = 0;
 	if (!check_num_ants(line, dt))
 		return (0);
-	if (!get_rms_lnks(line, &rm))
+	if (!(ht = get_rms_lnks(line, &rm)))
 		return (0);
+	print_hash_tab(ht);
 	//-----------------------------
 	// while (get_next_line(0, &line) > 0)
 	// {
