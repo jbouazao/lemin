@@ -6,7 +6,7 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2020/01/10 10:53:43 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2020/01/10 10:54:42 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ int		parse_link(t_rooms **hash_tab, char *line)
 	t_rooms	*it_hash1;
 	t_rooms	*it_hash2;
 	int		hash1;
-	int		hash2;s
+	int		hash2;
 
 	i = 0;
 	splitted = ft_strsplit(line, '-');
