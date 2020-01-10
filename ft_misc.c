@@ -140,6 +140,8 @@ int		link_is_valid(char *line)
 		ft_printf("error because of 'L' or line is NULL\n");
 		return (0);
 	}
+	if (line[0] == '-' || line[(int)ft_strlen(line) - 1] == '-')
+		return (0);
 	while (line[i])
 	{
 		count += (line[i] == '-') ? 1 : 0;
@@ -177,6 +179,8 @@ int		parse_link(t_rooms **hash_tab, char *line)
 	i = 0;
 	splitted = ft_strsplit(line, '-');
 	//not freed yet
+	if (!splitted[0] || !splitted[1])
+		return(0);
 	hash1 = hash_name(splitted[0]);
 	hash2 = hash_name(splitted[1]);
 	it_hash1 = hash_tab[hash1];
@@ -203,6 +207,8 @@ int		parse_link(t_rooms **hash_tab, char *line)
 		if (!it_hash1)
 			return (0);
 	}
+	if (it_hash1 == NULL || it_hash2 == NULL)
+		return (0);
 	return (1);
 }
 //see here
