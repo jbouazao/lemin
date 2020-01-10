@@ -6,7 +6,7 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2019/12/07 13:38:03 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2020/01/10 11:02:01 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,5 +164,5 @@ int		get_links(t_rooms **hash_tab, char **line)
 		ft_strdel(line);
 	}
 	//should free the line
-	return (1);
+	return (1);d
 }
