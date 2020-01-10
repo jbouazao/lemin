@@ -6,12 +6,39 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/29 18:38:51 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/07 13:10:42 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2019/12/08 17:57:32 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
 
+//should redo this
+t_links		*creat_lnk_lst(t_rooms **rm)
+{
+	t_links	*elmnt;
+	
+	//not freed yet
+	elmnt = (t_links *)ft_memalloc(sizeof(t_links));
+	elmnt->link = (*rm)->name;
+	elmnt->next = NULL;
+	return (elmnt);
+}
+
+void		add_lnk_lst(t_rooms **rm, t_links **lnk_lst)
+{
+	t_links	*temp;
+	t_links	*node;
+
+	temp = *lnk_lst;
+	//not freed yet
+	node = (t_links *)ft_memalloc(sizeof(t_links));
+	node->link = (*rm)->name;
+	node->next = NULL;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = node;
+}
+//-----------------------------------------------------------------------
 static int	creat_rm_lst(t_rooms **rm, char *line, char c)
 {
 	(*rm) = (t_rooms *)ft_memalloc(sizeof(t_rooms));
@@ -96,7 +123,7 @@ void		free_list(t_rooms **rm)
 	}
 }
 
-t_rooms		*node_dup_with_name(char *name)
+t_rooms		*node_dup_with_name(t_rooms *temp)
 {//dupped not freed yet 
 	t_rooms		*dupped;
 
@@ -107,13 +134,13 @@ t_rooms		*node_dup_with_name(char *name)
 	}
 	else
 	{
-		if (name == NULL)
+		if (temp->name == NULL)
 		{
 			ft_memdel((void *)dupped);
 			return (NULL);
 		}
-		dupped->name = ft_strdup(name);
-		dupped->rm = 0;
+		dupped->name = ft_strdup(temp->name);
+		dupped->rm = temp->rm;
 		dupped->next = NULL;
 	}
 	return (dupped);

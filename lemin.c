@@ -6,7 +6,7 @@
 /*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:31 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/06 15:32:01 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2019/12/08 13:53:34 by yjouaoud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int		get_rms_lnks(char *line, t_rooms **rm)
 {
 	char	c;
 	char	*temp;
+	t_rooms	**ht;
 
 	while (get_next_line(0, &line) > 0 && (c = 'r'))
 	{
@@ -70,7 +71,14 @@ int		get_rms_lnks(char *line, t_rooms **rm)
 		else if (link_is_valid(line))
 		{
 			//should edit-------------
-			get_links(mk_hash_tab(*rm), &line);
+			if (!((*rm)->sz_lst = node_list_count(*rm)))
+			{
+				ft_printf("list is empty\n");
+				return (0);
+			}
+			ht = mk_hash_tab(rm);
+			get_links(ht, &line);
+			print_hash_tab(ht);
 			return (1);
 			//------------------------
 		}
@@ -141,9 +149,7 @@ int		get_data(t_s *dt, char *line)
 	// 	ft_strdel(&line);
 	// }
 	//-----------------------------
-	ft_printf("count1 = %d\n", node_list_count(rm));
-	prnt_rms_lst(rm);
-	free_list(&rm);
+	// ft_printf("count1 = %d\n", node_list_count(rm));
 	return (1);
 }
 
