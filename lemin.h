@@ -53,7 +53,7 @@ int					check_num_ants(char *line, t_s *dt);
 int					get_data(t_s *dt, char *line);
 int					is_num(char *line);
 void				init_t_rooms(t_rooms *rm);
-int					get_rms_lnks(char *line, t_rooms **rm);
+t_rooms				**get_rms_lnks(char *line, t_rooms **rm);
 char				*valid_room(char *line);
 int					link_is_valid(char *line);
 int					get_links(t_rooms **hash_tab, char **line);
