@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/01/12 11:57:51 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/01/12 12:00:22 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 # include "./ft_printf/src/ft_printf.h"
 # include "get_next_line.h"
 # define COMPLEX 10000
+
+typedef struct		s_q
+{
+	char			*name;
+	struct s_q		*next;
+}					t_q;
 
 typedef struct		s_s
 {
