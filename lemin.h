@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/01/12 11:12:24 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/01/12 11:57:51 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct		s_rooms
 {
 	char			*name;
 	struct s_rooms	*next;
+	struct s_rooms	*previous;
 	char			rm;
 	int				sz_lst;
 	t_links			*links;
@@ -53,7 +54,7 @@ t_rooms				*node_dup_with_name(t_rooms *name);
 */
 void				init_t_s(t_s *dt);
 int					check_num_ants(char *line, t_s *dt);
-int					get_data(t_s *dt, char *line);
+t_rooms				**get_data(t_s *dt, char *line);
 int					is_num(char *line);
 void				init_t_rooms(t_rooms *rm);
 t_rooms				**get_rms_lnks(char *line, t_rooms **rm, t_s *dt);
