@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:31 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/01/12 11:12:50 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/01/12 11:27:43 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,39 +98,6 @@ t_rooms	**get_rms_lnks(char *line, t_rooms **rm, t_s *dt)
 	return (ht);
 }
 
-// int		get_rms_lnks1(char *line, t_rooms **rm)
-// {
-// 	char	c;
-// 	char	*temp;
-
-// 	if (!ft_strcmp(line, "##start") || !ft_strcmp(line, "##end"))
-// 	{
-// 		ft_strdel(&line);
-// 		get_next_line(0, &line);
-// 		if (!add_to_list(rm, line, c = line[2]))
-// 			return (0);
-// 	}
-// 	else if (line[0] == '#')
-// 		ft_printf("comment\n");
-// 	else if ((temp = valid_room(line)))
-// 	{
-// 		ft_strdel(&temp);
-// 		if (!add_to_list(rm, line, c))
-// 			return (0);
-// 	}
-// 	return (1);
-// }
-
-// int		get_rms_lnks2(char *line, t_rooms **rm)
-// {
-// 	if (valid_link)
-// 	{
-
-// 	}
-// 	else
-// 		return(0);
-// }
-
 int		get_data(t_s *dt, char *line)
 {
 	t_rooms	*rm;
@@ -143,24 +110,7 @@ int		get_data(t_s *dt, char *line)
 		return (0);
 	if (!(ht = get_rms_lnks(line, &rm, dt)))
 		return (0);
-	print_hash_tab(ht);
-	//-----------------------------
-	// while (get_next_line(0, &line) > 0)
-	// {
-	// 	if (!get_rms_lnks(line, &rm))
-	// 	{
-	// 		ft_strdel(&line);
-	// 		break ;
-	// 	}
-	// 	if (!links())
-	// 	{
-	// 		ft_strdel(&line);
-	// 		break ;
-	// 	}
-	// 	ft_strdel(&line);
-	// }
-	//-----------------------------
-	// ft_printf("count1 = %d\n", node_list_count(rm));
+	// print_hash_tab(ht);
 	return (1);
 }
 
