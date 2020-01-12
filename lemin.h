@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lemin.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/08 17:27:32 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2020/01/12 11:12:24 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 typedef struct		s_s
 {
 	int				ants;
+	char			*st;
+	char			*end;
 }					t_s;
 
 typedef struct		s_links
@@ -42,18 +44,19 @@ typedef struct		s_rooms
 ** LIST
 */
 void				prnt_rms_lst(t_rooms *rm);
-int					add_to_list(t_rooms **rm, char *line, char c);
+int					add_to_list(t_rooms **rm, char *line);
 void				free_list(t_rooms **rm);
 int					node_list_count(t_rooms *rm);
 t_rooms				*node_dup_with_name(t_rooms *name);
 /*
 ** COMMENT
 */
+void				init_t_s(t_s *dt);
 int					check_num_ants(char *line, t_s *dt);
 int					get_data(t_s *dt, char *line);
 int					is_num(char *line);
 void				init_t_rooms(t_rooms *rm);
-t_rooms				**get_rms_lnks(char *line, t_rooms **rm);
+t_rooms				**get_rms_lnks(char *line, t_rooms **rm, t_s *dt);
 char				*valid_room(char *line);
 int					link_is_valid(char *line);
 int					get_links(t_rooms **hash_tab, char **line);

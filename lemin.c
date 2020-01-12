@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lemin.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:31 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/08 13:53:34 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2020/01/12 11:12:50 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int		check_num_ants(char *line, t_s *dt)
 	return (1);
 }
 
-t_rooms	**get_rms_lnks(char *line, t_rooms **rm)
+t_rooms	**get_rms_lnks(char *line, t_rooms **rm, t_s *dt)
 {
 	char	c;
 	char	*temp;
@@ -56,9 +56,14 @@ t_rooms	**get_rms_lnks(char *line, t_rooms **rm)
 	{
 		if (!ft_strcmp(line, "##start") || !ft_strcmp(line, "##end"))
 		{
+			c = line[2];
 			ft_strdel(&line);
 			get_next_line(0, &line);
-			if (!add_to_list(rm, line, c = line[2]))
+			if (c == 's')
+				dt->st = valid_room(line);
+			else
+				dt->end = valid_room(line);
+			if (!add_to_list(rm, line))
 				return (ht);
 		}
 		else if (line[0] == '#')
@@ -66,7 +71,7 @@ t_rooms	**get_rms_lnks(char *line, t_rooms **rm)
 		else if ((temp = valid_room(line)))
 		{
 			ft_strdel(&temp);
-			if (!add_to_list(rm, line, c))
+			if (!add_to_list(rm, line))
 				return (ht);
 		}
 		else if (link_is_valid(line))
@@ -83,7 +88,6 @@ t_rooms	**get_rms_lnks(char *line, t_rooms **rm)
 				//should free hashtable
 				return (NULL);
 			}
-			// print_hash_tab(ht);
 			return (ht);
 			//------------------------
 		}
@@ -137,7 +141,7 @@ int		get_data(t_s *dt, char *line)
 	temp = 0;
 	if (!check_num_ants(line, dt))
 		return (0);
-	if (!(ht = get_rms_lnks(line, &rm)))
+	if (!(ht = get_rms_lnks(line, &rm, dt)))
 		return (0);
 	print_hash_tab(ht);
 	//-----------------------------
@@ -167,6 +171,7 @@ int     main(void)
 	int		ret;
 
 	line = NULL;
+	init_t_s(&dt);
 	if (!(ret = get_data(&dt, line)))
 		return (0);
 	return (0);

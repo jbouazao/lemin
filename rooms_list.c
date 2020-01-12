@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rooms_list.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/29 18:38:51 by jbouazao          #+#    #+#             */
-/*   Updated: 2019/12/08 17:57:32 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2020/01/11 15:51:56 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void		add_lnk_lst(t_rooms **rm, t_links **lnk_lst)
 	temp->next = node;
 }
 //-----------------------------------------------------------------------
-static int	creat_rm_lst(t_rooms **rm, char *line, char c)
+static int	creat_rm_lst(t_rooms **rm, char *line)
 {
 	(*rm) = (t_rooms *)ft_memalloc(sizeof(t_rooms));
 	(*rm)->name = NULL;
@@ -50,11 +50,10 @@ static int	creat_rm_lst(t_rooms **rm, char *line, char c)
 		ft_memdel((void **)rm);
 		return (0);
 	}
-	(*rm)->rm = c;
 	return (1);
 }
 
-static int	add_rm_lst(t_rooms **rm, char *line, char c)
+static int	add_rm_lst(t_rooms **rm, char *line)
 {
 	t_rooms	*temp;
 	t_rooms	*node;
@@ -63,7 +62,6 @@ static int	add_rm_lst(t_rooms **rm, char *line, char c)
 	node = (t_rooms *)ft_memalloc(sizeof(t_rooms));
 	node->name = NULL;
 	node->next = NULL;
-	node->rm = c;
 	while (temp->next != NULL)
 		temp = temp->next;
 	if (!(node->name = valid_room(line)))
@@ -76,17 +74,17 @@ static int	add_rm_lst(t_rooms **rm, char *line, char c)
 	return (1);
 }
 
-int			add_to_list(t_rooms **rm, char *line, char c)
+int			add_to_list(t_rooms **rm, char *line)
 {
 	if (!(*rm))
 	{
-		if (!creat_rm_lst(rm, line, c))
+		if (!creat_rm_lst(rm, line))
 		{
 			ft_strdel(&line);
 			return (0);
 		}
 	}
-	else if (!add_rm_lst(rm, line, c))
+	else if (!add_rm_lst(rm, line))
 	{
 		ft_strdel(&line);
 		free_list(rm);
