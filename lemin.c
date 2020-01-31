@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:31 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/01/12 11:27:43 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/01/14 22:13:49 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,31 +98,52 @@ t_rooms	**get_rms_lnks(char *line, t_rooms **rm, t_s *dt)
 	return (ht);
 }
 
-int		get_data(t_s *dt, char *line)
+t_rooms		**get_data(t_s *dt, char *line)
 {
 	t_rooms	*rm;
-	int		temp;
 	t_rooms	**ht;
 
+	ht = NULL;
 	rm = NULL;
-	temp = 0;
 	if (!check_num_ants(line, dt))
-		return (0);
+		return (ht);
 	if (!(ht = get_rms_lnks(line, &rm, dt)))
-		return (0);
+		return (ht);
 	// print_hash_tab(ht);
-	return (1);
+	return (ht);
+}
+
+t_rooms		*sch_inht(char *name, t_rooms **ht)
+{
+	int		id;
+	t_rooms	*it_ht;
+
+	id = hash_name(name);
+	it_ht = ht[id];
+	while (it_ht && ft_strcmp(it_ht->name, name))
+		it_ht = it_ht->next;
+	return (it_ht);
 }
 
 int     main(void)
 {
 	char    *line;
 	t_s     dt;
-	int		ret;
+	t_rooms	**ht;
+	t_rooms	*tmp_ptr;
 
 	line = NULL;
 	init_t_s(&dt);
-	if (!(ret = get_data(&dt, line)))
+	if (!(ht = get_data(&dt, line)))
 		return (0);
+	//-------------------------------------
+	fill_queue(dt, ht);
+	// tmp_ptr = sch_inht(dt.end, ht);
+
+	// while (tmp_ptr)
+	// {
+	// 	ft_printf("%s\n", tmp_ptr->name);
+	// 	tmp_ptr = tmp_ptr->prev;
+	// }
 	return (0);
 }

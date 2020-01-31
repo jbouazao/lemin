@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   ft_misc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2020/01/10 11:03:10 by yjouaoud         ###   ########.fr       */
-/*   Updated: 2020/01/10 11:03:10 by yjouaoud         ###   ########.fr       */
+/*   Updated: 2020/01/31 13:39:26 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "lemin.h"
 
@@ -76,7 +76,7 @@ t_rooms				**mk_hash_tab(t_rooms **rm)
 		int i = 0;
 		while (i < COMPLEX)
 		{
-			hash_tab[i] = (t_rooms *)ft_memalloc(sizeof(t_rooms));
+			hash_tab[i] = (t_rooms *)ft_memalloc(sizeof(t_rooms));//im thinking to remove this allocation because we allocate it in nodedupwithname
 			hash_tab[i++] = NULL;
 		}
 		while (temp)
@@ -93,7 +93,7 @@ t_rooms				**mk_hash_tab(t_rooms **rm)
 			}
 			temp = temp->next;
 		}
-		free_list(rm);
+		// free_list(rm);
 		// print_hash_tab(hash_tab, tab_size);
 	}
 	return (hash_tab);
@@ -181,7 +181,7 @@ int		parse_link(t_rooms **hash_tab, char *line)
 	splitted = ft_strsplit(line, '-');
 	//not freed yet
 	if (!splitted[0] || !splitted[1])
-		return(0);
+		return (0);
 	hash1 = hash_name(splitted[0]);
 	hash2 = hash_name(splitted[1]);
 	it_hash1 = hash_tab[hash1];
@@ -199,13 +199,13 @@ int		parse_link(t_rooms **hash_tab, char *line)
 					break ;
 				}
 				it_hash2 = it_hash2->next;
-				if (!it_hash2)
+				if (!it_hash2)//i think this is unnecessary
 					return (0);
 			}
 			break ;
 		}
 		it_hash1 = it_hash1->next;
-		if (!it_hash1)
+		if (!it_hash1)//i think this is unnecessary
 			return (0);
 	}
 	if (it_hash1 == NULL || it_hash2 == NULL)

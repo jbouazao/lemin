@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/29 18:38:51 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/01/11 15:51:56 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/01/12 17:16:39 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ t_links		*creat_lnk_lst(t_rooms **rm)
 	//not freed yet
 	elmnt = (t_links *)ft_memalloc(sizeof(t_links));
 	elmnt->link = (*rm)->name;
+	elmnt->flow = 1;
 	elmnt->next = NULL;
 	return (elmnt);
 }
@@ -33,6 +34,7 @@ void		add_lnk_lst(t_rooms **rm, t_links **lnk_lst)
 	//not freed yet
 	node = (t_links *)ft_memalloc(sizeof(t_links));
 	node->link = (*rm)->name;
+	node->flow = 1;
 	node->next = NULL;
 	while (temp->next != NULL)
 		temp = temp->next;
@@ -139,6 +141,10 @@ t_rooms		*node_dup_with_name(t_rooms *temp)
 		}
 		dupped->name = ft_strdup(temp->name);
 		dupped->rm = temp->rm;
+		dupped->vstd = 0;
+		dupped->flag = 0;
+		dupped->cap = 0;
+		dupped->prev = NULL;
 		dupped->next = NULL;
 	}
 	return (dupped);
