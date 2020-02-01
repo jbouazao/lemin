@@ -6,55 +6,54 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 11:15:30 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/01 14:34:15 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/01 17:47:31 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
 
-t_q			*init_queue(char *start)
+t_q			*init_queue(t_rooms *start)
 {
 	t_q		*start_node;
 
 	start_node = (t_q *)ft_memalloc(sizeof(t_q));
-	start_node->name = ft_strdup(start);//should be freed
+	// start_node->name = ft_strdup(start);//should be freed//temp
+	start_node->node = start;
 	start_node->next = NULL;
 	return (start_node);
 }
 
 void		add_to_queue(t_q **qu, t_links *it_lnk)
 {
-		t_q *new_node;
-		t_q	*it_qu;
+		t_q		*new_node;
+		t_q		*it_qu;
+		t_rooms	*temp;
 
 		it_qu = *qu;
 		new_node = (t_q *)ft_memalloc(sizeof(t_q));
-		new_node->name = ft_strdup(it_lnk->link);
+		// new_node->name = ft_strdup(it_lnk->link);//thinking to remove this
+		new_node->node = it_lnk->lnk;
 		new_node->next = NULL;
 		while (it_qu->next)
 			it_qu = it_qu->next;
 		it_qu->next = new_node;
 }
 
-int			add_links_to_queue(t_q **qu, char *name, t_rooms **ht, t_s dt)
+int			add_links_to_queue(t_q **qu, t_rooms *node, t_rooms **ht, t_s dt)
 {
 	t_links	*it_lnk;
 	t_rooms	*tmp_node;
 
-	tmp_node = ht[hash_name(name)];
-	while (tmp_node && ft_strcmp(tmp_node->name, name))
-		tmp_node = tmp_node->next;
+	tmp_node = node;
 	it_lnk = tmp_node->links;
 	while (it_lnk)
 	{
-		// printf("#%s\n", it_lnk->link);
-		t_rooms	*tmp_lnk;//the link "it_lnk->link" in the hashtable
-		tmp_lnk = ht[hash_name(it_lnk->link)];
-		while (tmp_lnk && ft_strcmp(tmp_lnk->name, it_lnk->link))
-			tmp_lnk = tmp_lnk->next;
-		if (!ft_strcmp(dt.st, name) && it_lnk->flow > 0 && !tmp_lnk->vstd)
+		t_rooms	*tmp_lnk;
+		tmp_lnk = it_lnk->lnk;
+		// while (tmp_lnk && ft_strcmp(tmp_lnk->name, it_lnk->link))
+		// 	tmp_lnk = tmp_lnk->next;
+		if (!ft_strcmp(dt.st, node->name) && it_lnk->flow > 0 && !tmp_lnk->vstd)
 		{
-			// ft_printf("1\n");
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
@@ -62,7 +61,6 @@ int			add_links_to_queue(t_q **qu, char *name, t_rooms **ht, t_s dt)
 		else if (tmp_node->prev && !tmp_node->prev->cap && tmp_node->cap &&
 		it_lnk->flow == 2 && !tmp_lnk->vstd)
 		{
-			// ft_printf("2\n");
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
@@ -70,7 +68,6 @@ int			add_links_to_queue(t_q **qu, char *name, t_rooms **ht, t_s dt)
 		else if (tmp_node->prev && tmp_node->prev->cap && tmp_node->cap &&
 		it_lnk->flow > 0 && !tmp_lnk->vstd)
 		{
-			// ft_printf("3\n");
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
@@ -78,19 +75,34 @@ int			add_links_to_queue(t_q **qu, char *name, t_rooms **ht, t_s dt)
 		else if (tmp_node->prev && !tmp_node->prev->cap && !tmp_node->cap &&
 		it_lnk->flow > 0 && !tmp_lnk->vstd)
 		{
-			// ft_printf("4\n");
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
 		}//should ad the condition where cap is 0 and prev cap is 1
 		if (!ft_strcmp(tmp_lnk->name, dt.end) && it_lnk->flow > 0)//should free queue
 		{
-			// ft_printf("5\n");
 			return (1);
 		}
 		it_lnk = it_lnk->next;
 	}
 	return (0);
+}
+
+void		correct_path(t_q *qu, t_s dt, t_rooms **ht)
+{
+	t_rooms	*it_ht;
+	t_links	*it_lnk;
+	t_q		*it_qu;
+
+	it_ht = ht[hash_name(dt.end)];
+	while (it_ht && ft_strcmp(dt.end, it_ht->name))
+		it_ht = it_ht->next;
+	it_lnk = it_ht->links;
+	// printf("%s\n", it_ht->name);
+	while (it_lnk && ft_strcmp(it_lnk->lnk->name, it_ht->prev->name))
+		it_lnk = it_lnk->next;
+	it_lnk->flow += 1;
+	printf("%s\n%d\n", it_lnk->lnk->name, it_lnk->flow);
 }
 
 int			fill_queue(t_s dt, t_rooms **ht)
@@ -105,30 +117,23 @@ int			fill_queue(t_s dt, t_rooms **ht)
 		else
 		{
 			t_q		*qu;
-			qu = init_queue(it_ht->name);
+			qu = init_queue(it_ht);
 			t_q		*temp = qu;
 			it_ht->vstd = 1;
 			while (qu)
 			{
-				// printf("Q --> %s\n", qu->name);
-				if (add_links_to_queue(&qu, qu->name, ht, dt))
+				if (add_links_to_queue(&qu, qu->node, ht, dt))
 				{
-					while (temp)
-					{
-						printf("%s\n", temp->name);
-						temp = temp->next;
-					}
+					// while (temp)
+					// {
+					// 	printf("%s\n", temp->node->name);
+					// 	temp = temp->next;
+					// }
+					correct_path(qu, dt, ht);
 					return (1);
 				}
 				qu = qu->next;
-				// ft_printf("%s\n", temp->name);
 			}
-			// while (temp)
-			// {
-			// 	ft_printf("1");
-			// 	ft_printf("%s\n", temp->name);
-			// 	temp = temp->next;
-			// }
 			break ;
 		}
 	}

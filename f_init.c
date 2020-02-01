@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 13:02:00 by yjouaoud          #+#    #+#             */
-/*   Updated: 2020/01/14 20:45:28 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/01 15:49:32 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	init_t_q(t_q *q)
 {
-	q->name = NULL;
+	// q->name = NULL;
 	q->next = NULL;
 }
 

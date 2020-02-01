@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/01 11:30:45 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/01 15:08:40 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 
 typedef struct		s_q
 {
-	char			*name;
+	// char			*name;//should remove this if worked
+	struct s_rooms	*node;
 	struct s_q		*next;
 }					t_q;
 
