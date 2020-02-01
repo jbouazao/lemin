@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 13:02:00 by yjouaoud          #+#    #+#             */
-/*   Updated: 2020/01/12 12:01:40 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/01/14 20:45:28 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,5 @@ void	init_t_rooms(t_rooms *rm)
 {
 	rm->name = NULL;
 	rm->next = NULL;
+	rm->prev = NULL;
 }

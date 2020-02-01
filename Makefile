@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yjouaoud <yjouaoud@student.42.fr>          +#+  +:+       +#+         #
+#    By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/11/01 11:18:43 by jbouazao          #+#    #+#              #
-#    Updated: 2019/12/04 17:54:46 by yjouaoud         ###   ########.fr        #
+#    Updated: 2020/01/14 20:45:57 by jbouazao         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ FILE_NAMES =	lemin.c\
 				get_next_line.c\
 				f_init.c\
 				rooms_list.c\
-				ft_misc.c
+				ft_misc.c\
+				ft_queue.c
 OBJ = $(FILE_NAMES:.c=.o)
 PRINTF_LIBFT = ./ft_printf
 LIB = ./ft_printf/libftprintf.a

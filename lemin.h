@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/01/12 12:00:22 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/01 11:30:45 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,26 @@ typedef struct		s_s
 	char			*end;
 }					t_s;
 
-typedef struct		s_links
-{
-	char			*link;
-	struct s_links	*next;
-}					t_links;
-
 typedef struct		s_rooms
 {
 	char			*name;
 	struct s_rooms	*next;
-	struct s_rooms	*previous;
+	struct s_rooms	*prev;
+	int				vstd;
+	int				flag;
+	int				cap;
 	char			rm;
 	int				sz_lst;
-	t_links			*links;
-
+	struct s_links	*links;
 }					t_rooms;
+
+typedef struct		s_links
+{
+	char			*link;//should remove this
+	t_rooms			*lnk;
+	int				flow;
+	struct s_links	*next;
+}					t_links;
 
 /*
 ** LIST
@@ -77,4 +81,8 @@ int					parse_link(t_rooms **hash_tab, char *line);
 void				add_link(t_rooms **element1, t_rooms **element2);
 t_links				*creat_lnk_lst(t_rooms **rm);
 void				add_lnk_lst(t_rooms **rm, t_links **lnk_lst);
+/*
+** QUEUE
+*/
+int					fill_queue(t_s dt, t_rooms **ht);
 #endif
