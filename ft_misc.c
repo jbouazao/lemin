@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2020/01/31 13:39:26 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/01 11:25:17 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,9 @@ void			print_hash_tab(t_rooms **hash_tab)
 				if (temp_hash_tab->links)
 					while (temp_hash_tab->links)
 					{
-						ft_printf("link: %s\n", temp_hash_tab->links->link);
+						// ft_printf("link: %s\n", temp_hash_tab->links->link);
+						// temp_hash_tab->links = temp_hash_tab->links->next;
+						ft_printf("link: %s\n", temp_hash_tab->links->lnk->name);
 						temp_hash_tab->links = temp_hash_tab->links->next;
 					}
 				temp_hash_tab = temp_hash_tab->next;

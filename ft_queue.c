@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 11:15:30 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/01/25 13:24:37 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/01 14:34:15 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,44 +47,45 @@ int			add_links_to_queue(t_q **qu, char *name, t_rooms **ht, t_s dt)
 	it_lnk = tmp_node->links;
 	while (it_lnk)
 	{
+		// printf("#%s\n", it_lnk->link);
 		t_rooms	*tmp_lnk;//the link "it_lnk->link" in the hashtable
 		tmp_lnk = ht[hash_name(it_lnk->link)];
 		while (tmp_lnk && ft_strcmp(tmp_lnk->name, it_lnk->link))
 			tmp_lnk = tmp_lnk->next;
 		if (!ft_strcmp(dt.st, name) && it_lnk->flow > 0 && !tmp_lnk->vstd)
 		{
-			ft_printf("1\n");
+			// ft_printf("1\n");
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
 		}
-		else if (tmp_node->prev && !tmp_lnk->prev->cap && tmp_lnk->cap &&
+		else if (tmp_node->prev && !tmp_node->prev->cap && tmp_node->cap &&
 		it_lnk->flow == 2 && !tmp_lnk->vstd)
 		{
-			ft_printf("2\n");
+			// ft_printf("2\n");
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
 		}
-		else if (tmp_node->prev && tmp_lnk->prev->cap && tmp_lnk->cap &&
+		else if (tmp_node->prev && tmp_node->prev->cap && tmp_node->cap &&
 		it_lnk->flow > 0 && !tmp_lnk->vstd)
 		{
-			ft_printf("3\n");
+			// ft_printf("3\n");
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
 		}
-		else if (tmp_node->prev && !tmp_lnk->prev->cap && !tmp_lnk->cap &&
+		else if (tmp_node->prev && !tmp_node->prev->cap && !tmp_node->cap &&
 		it_lnk->flow > 0 && !tmp_lnk->vstd)
 		{
-			ft_printf("4\n");
+			// ft_printf("4\n");
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
-		}
+		}//should ad the condition where cap is 0 and prev cap is 1
 		if (!ft_strcmp(tmp_lnk->name, dt.end) && it_lnk->flow > 0)//should free queue
 		{
-			ft_printf("5\n");
+			// ft_printf("5\n");
 			return (1);
 		}
 		it_lnk = it_lnk->next;
@@ -111,11 +112,20 @@ int			fill_queue(t_s dt, t_rooms **ht)
 			{
 				// printf("Q --> %s\n", qu->name);
 				if (add_links_to_queue(&qu, qu->name, ht, dt))
+				{
+					while (temp)
+					{
+						printf("%s\n", temp->name);
+						temp = temp->next;
+					}
 					return (1);
+				}
 				qu = qu->next;
+				// ft_printf("%s\n", temp->name);
 			}
 			// while (temp)
 			// {
+			// 	ft_printf("1");
 			// 	ft_printf("%s\n", temp->name);
 			// 	temp = temp->next;
 			// }
