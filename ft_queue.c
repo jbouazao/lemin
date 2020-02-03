@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 11:15:30 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/01 17:47:31 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/03 18:55:48 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int			add_links_to_queue(t_q **qu, t_rooms *node, t_rooms **ht, t_s dt)
 			add_to_queue(qu, it_lnk);
 			tmp_lnk->vstd = 1;
 			tmp_lnk->prev = tmp_node;
-		}//should ad the condition where cap is 0 and prev cap is 1
+		}//should add the condition where cap is 0 and prev cap is 1
 		if (!ft_strcmp(tmp_lnk->name, dt.end) && it_lnk->flow > 0)//should free queue
 		{
 			return (1);
@@ -91,18 +91,29 @@ int			add_links_to_queue(t_q **qu, t_rooms *node, t_rooms **ht, t_s dt)
 void		correct_path(t_q *qu, t_s dt, t_rooms **ht)
 {
 	t_rooms	*it_ht;
-	t_links	*it_lnk;
-	t_q		*it_qu;
+	t_links	*it_lnk1;
+	t_links	*it_lnk2;
 
 	it_ht = ht[hash_name(dt.end)];
 	while (it_ht && ft_strcmp(dt.end, it_ht->name))
 		it_ht = it_ht->next;
-	it_lnk = it_ht->links;
-	// printf("%s\n", it_ht->name);
-	while (it_lnk && ft_strcmp(it_lnk->lnk->name, it_ht->prev->name))
-		it_lnk = it_lnk->next;
-	it_lnk->flow += 1;
-	printf("%s\n%d\n", it_lnk->lnk->name, it_lnk->flow);
+	while (ft_strcmp(it_ht->name, dt.st))
+	{
+		it_lnk1 = it_ht->links;
+		// printf("%s\n", it_ht->name);
+		while (it_lnk1 && it_ht->prev &&
+		ft_strcmp(it_lnk1->lnk->name, it_ht->prev->name))
+			it_lnk1 = it_lnk1->next;
+		it_lnk1->flow += 1;
+		it_lnk2 = it_lnk1->lnk->links;
+		while (it_lnk2 && ft_strcmp(it_lnk2->lnk->name, it_ht->name))
+			it_lnk2 = it_lnk2->next;
+		it_lnk2->flow -= 1;
+		it_ht = it_ht->prev;
+		printf("first lnk: %s | flow: %d\n", it_lnk1->lnk->name, it_lnk1->flow);
+		printf("second lnk: %s | flow: %d\n", it_lnk2->lnk->name, it_lnk2->flow);
+		printf("\n");
+	}
 }
 
 int			fill_queue(t_s dt, t_rooms **ht)
@@ -130,6 +141,7 @@ int			fill_queue(t_s dt, t_rooms **ht)
 					// 	temp = temp->next;
 					// }
 					correct_path(qu, dt, ht);
+					// get_path()
 					return (1);
 				}
 				qu = qu->next;
