@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2020/02/01 11:25:17 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/04 16:51:17 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,4 +238,23 @@ int		get_links(t_rooms **hash_tab, char **line)
 	}
 	//should free the line
 	return (1);
+}
+
+int			count_start_links(t_rooms **ht, char *name)
+{
+	t_rooms	*it_ht;
+	t_links	*it_lnk;
+	int		count;
+
+	it_ht = ht[hash_name(name)];
+	count = 0;
+	while (it_ht && ft_strcmp(name, it_ht->name))
+		it_ht = it_ht->next;
+	it_lnk = it_ht->links;
+	while (it_lnk)
+	{
+		it_lnk = it_lnk->next;
+		count++;
+	}
+	return (count);
 }
