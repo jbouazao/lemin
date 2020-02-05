@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/01 15:08:40 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/04 16:59:31 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ t_rooms				**get_rms_lnks(char *line, t_rooms **rm, t_s *dt);
 char				*valid_room(char *line);
 int					link_is_valid(char *line);
 int					get_links(t_rooms **hash_tab, char **line);
+int					count_start_links(t_rooms **ht, char *name);
 /*
 ** HASH_TABLE
 */

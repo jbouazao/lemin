@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 11:15:30 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/04 17:15:12 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/05 18:19:25 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void		add_to_queue(t_q **qu, t_links *it_lnk)
 {
 		t_q		*new_node;
 		t_q		*it_qu;
-		t_rooms	*temp;
 
 		it_qu = *qu;
 		new_node = (t_q *)ft_memalloc(sizeof(t_q));//should free if not allocated
@@ -43,41 +42,39 @@ int			add_links_to_queue(t_q **qu, t_rooms *node, t_rooms **ht, t_s dt)
 {
 	t_links	*it_lnk;
 	t_rooms	*tmp_node;
+	t_q		*it_qu;//not sure whether to put a single pointer or two
 
 	tmp_node = node;
 	it_lnk = tmp_node->links;
+	it_qu = *qu;
 	while (it_lnk)
 	{
-		t_rooms	*tmp_lnk;
-		tmp_lnk = it_lnk->lnk;
-		// while (tmp_lnk && ft_strcmp(tmp_lnk->name, it_lnk->link))
-		// 	tmp_lnk = tmp_lnk->next;
-		if (!ft_strcmp(dt.st, node->name) && it_lnk->flow > 0 && !tmp_lnk->vstd)
+		if (!ft_strcmp(dt.st, node->name) && it_lnk->flow > 0 && !it_lnk->lnk->vstd)
 		{
 			add_to_queue(qu, it_lnk);
-			tmp_lnk->vstd = 1;
-			tmp_lnk->prev = tmp_node;
+			it_lnk->lnk->vstd = 1;
+			it_lnk->lnk->prev = tmp_node;
 		}
 		else if (tmp_node->prev && !tmp_node->prev->cap && tmp_node->cap &&
-		it_lnk->flow == 2 && !tmp_lnk->vstd)
+		it_lnk->flow == 2 && !it_lnk->lnk->vstd)
 		{
 			add_to_queue(qu, it_lnk);
-			tmp_lnk->vstd = 1;
-			tmp_lnk->prev = tmp_node;
+			it_lnk->lnk->vstd = 1;
+			it_lnk->lnk->prev = tmp_node;
 		}
 		else if (tmp_node->prev && tmp_node->prev->cap && tmp_node->cap &&
-		it_lnk->flow > 0 && !tmp_lnk->vstd)
+		it_lnk->flow > 0 && !it_lnk->lnk->vstd)
 		{
 			add_to_queue(qu, it_lnk);
-			tmp_lnk->vstd = 1;
-			tmp_lnk->prev = tmp_node;
+			it_lnk->lnk->vstd = 1;
+			it_lnk->lnk->prev = tmp_node;
 		}
 		else if (tmp_node->prev && !tmp_node->prev->cap && !tmp_node->cap &&
-		it_lnk->flow > 0 && !tmp_lnk->vstd)
+		it_lnk->flow > 0 && !it_lnk->lnk->vstd)
 		{
 			add_to_queue(qu, it_lnk);
-			tmp_lnk->vstd = 1;
-			tmp_lnk->prev = tmp_node;
+			it_lnk->lnk->vstd = 1;
+			it_lnk->lnk->prev = tmp_node;
 		}//should add the condition where cap is 0 and prev cap is 1
 		// else if (tmp_node->prev && tmp_node->prev->cap && !tmp_node->cap &&
 		// it_lnk->flow > 0 && !tmp_lnk->vstd)
@@ -86,8 +83,13 @@ int			add_links_to_queue(t_q **qu, t_rooms *node, t_rooms **ht, t_s dt)
 		// 	tmp_lnk->vstd = 1;
 		// 	tmp_lnk->prev = tmp_node;
 		// }
-		if (!ft_strcmp(tmp_lnk->name, dt.end) && it_lnk->flow > 0)
+		if (!ft_strcmp(it_lnk->lnk->name, dt.end) && it_lnk->flow > 0)
 		{
+			while (it_qu)
+			{
+				it_qu->node->vstd = 0;
+				it_qu = it_qu->next;
+			}
 			return (1);
 		}
 		it_lnk = it_lnk->next;
@@ -143,53 +145,63 @@ t_q		***alloc_grps(t_rooms **ht, t_s dt)
 	int grp_count;
 	int	grp;
 	int	path;
+	int i;
 
 	grp_count = 0;
-	grp = 0;
+	grp = -1;
 	path = 0;
 	grp_count = count_start_links(ht, dt.st);
-	while (grp < grp_count)
+	grps = (t_q ***)ft_memalloc(sizeof(t_q **) * grp_count);
+	while (++grp < grp_count)
 	{
-		path = 0;
-		grps = (t_q ***)ft_memalloc(sizeof(t_q **));
-		while (path < grp_count)
-		{
-			grps[grp] = (t_q **)ft_memalloc(sizeof(t_q *));
-			path++;
-		}
-		grp++;
+		grps[grp] = (t_q **)ft_memalloc(sizeof(t_q *) * (grp + 1));
+		i = 0;
+		while (i <= grp)
+			grps[grp][i++] = NULL;
 	}
 	return (grps);
 }
 
-int		get_path(t_rooms *it_ht, t_s dt)
+void	add_to_path(t_q **grps, t_rooms *node)
+{
+	t_q *path;
+	t_q *it_grps;
+
+	it_grps = *grps;
+	path = (t_q *)ft_memalloc(sizeof(t_q));
+	path->node = node;
+	path->next = NULL;
+	if (!it_grps)
+		it_grps = path;
+	else
+	{
+		while (it_grps->next)
+			it_grps = it_grps->next;
+		it_grps->next = path;
+	}
+}
+
+int		get_paths(t_rooms *it_ht, t_s dt, t_q **grps)
 {
 	t_links	*it_lnk;
+	int		j;
 
-	// it_ht = ht[hash_name(dt.st)];
-	// while (it_ht && ft_strcmp(it_ht->name, dt.st))
-	// 	it_ht = it_ht->next;
-	// it_lnk = it_ht->links;
-	// while (it_lnk && it_lnk->lnk->flag == 0 && it_lnk->flow == 0)
-	// {
-	// 	while (it_ht && )
-	// 	{
-
-	// 	}
-	// }
+	j = 0;
 	it_lnk = it_ht->links;
 	while (it_lnk)
 	{
-		while (it_lnk->lnk->flag == 0 && it_lnk->flow == 0)
+		if (it_lnk->lnk->flag == 0 && it_lnk->flow == 0)
 		{
 			it_lnk->lnk->flag = 1;
+			add_to_path(grps, it_lnk->lnk);
 			it_ht = it_lnk->lnk;
-			//we should add the node to queue in the thirs dimension (still not allocated)
-			if (!ft_strcmp(it_ht->name, dt.end))//not sure about that in case of having multiple links and we coincidently bumped in the end node first
+			if (!ft_strcmp(it_ht->name, dt.end))
 				return (0);
-			get_path(it_ht, dt);
+			get_paths(it_ht, dt, grps);
+			break ;
 		}
 		it_lnk = it_lnk->next;
+		j++;
 	}
 	return (1);
 }
@@ -197,36 +209,59 @@ int		get_path(t_rooms *it_ht, t_s dt)
 int			fill_queue(t_s dt, t_rooms **ht)
 {
 	t_rooms	*it_ht;
+	t_q		***groups;
+	int		i;
+	int		j;
 
+	i = 0;
 	it_ht = ht[hash_name(dt.st)];
+	groups = alloc_grps(ht, dt);
 	while (it_ht)
 	{
 		if (ft_strcmp(dt.st, it_ht->name))
 			it_ht = it_ht->next;
 		else
 		{
-			t_q		*qu;
-			qu = init_queue(it_ht);
-			t_q		*temp = qu;
-			it_ht->vstd = 1;
-			while (qu)
+			while (i < count_start_links(ht, dt.st))
 			{
-				if (add_links_to_queue(&qu, qu->node, ht, dt))
+				t_q		*qu;
+				qu = init_queue(it_ht);
+				t_q		*temp = qu;
+				it_ht->vstd = 1;
+				while (qu)
 				{
-					correct_path(qu, dt, ht);
-					// while (temp)
-					// {
-					// 	printf("%s\n", temp->node->name);
-					// 	// ft_memdel((void **)&temp);
-					// 	temp = temp->next;
-					// }
-					free_queue(&temp);
-					// get_path()
-					return (1);
+					if (add_links_to_queue(&qu, qu->node, ht, dt))
+					{
+						j = 0;
+						correct_path(qu, dt, ht);
+						// while (temp)
+						// {
+						// 	printf("%s\n", temp->node->name);
+						// 	// ft_memdel((void **)&temp);
+						// 	temp = temp->next;
+						// }
+						while (j <= i)
+						{
+							printf("%d\n", j);
+							get_paths(temp->node, dt, &groups[i][j++]);
+							// t_q *tmp = groups[i][j-1];
+							// while (tmp)
+							// {
+							// 	printf("%s-", tmp->node->name);
+							// 	tmp = tmp->next;
+							// }
+							// printf("\n");
+						}
+						// return (1);
+					}
+					// printf("e%s\n", qu->node->name);
+					// if (!qu)
+					// printf("test\n");
+					qu = qu->next;
 				}
-				qu = qu->next;
+				free_queue(&temp);
+				i++;
 			}
-			break ;
 		}
 	}
 	return (0);
