@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2020/02/04 16:51:17 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/08 12:47:47 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,10 @@ int		link_is_valid(char *line)
 	if (count == 1)
 		return (1);
 	else
+	{
+		printf("test\n");
 		return (0);
+	}
 }
 
 void	add_link(t_rooms **element1, t_rooms **element2)
@@ -220,20 +223,30 @@ int		get_links(t_rooms **hash_tab, char **line)
 	if (link_is_valid(*line))
 	{
 		if (!(parse_link(hash_tab, *line)))
+		{
 			return (0);
+		}
 	}
 	else
 		return (0);
 	ft_strdel(line);
 	while (get_next_line(0, line) > 0)
 	{
-		if (link_is_valid(*line))
+		if (*line[0] == '#')
+		{
+			ft_printf("comment\n");
+			ft_strdel(line);
+		}
+		else if (link_is_valid(*line))
 		{
 			if (!(parse_link(hash_tab, *line)))
 				return (0);
 		}
 		else
+		{
+			printf("%s", *line);
 			return (0);
+	}
 		ft_strdel(line);
 	}
 	//should free the line
