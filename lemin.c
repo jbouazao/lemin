@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:31 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/01 13:06:11 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/08 12:47:47 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,9 @@ t_rooms		**get_data(t_s *dt, char *line)
 	if (!check_num_ants(line, dt))
 		return (ht);
 	if (!(ht = get_rms_lnks(line, &rm, dt)))
+	{
 		return (ht);
+	}
 	// print_hash_tab(ht);
 	return (ht);
 }

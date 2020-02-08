@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 11:15:30 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/08 12:13:36 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/08 17:52:31 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,19 +218,93 @@ void		reini_rms(t_rooms **ht)
 	}
 }
 
-// int			calc_score(t_s dt, t_q ***groups, t_rooms **ht)
-// {
-// 	int		grp_c;
-// 	t_rooms	*it_ht;
-// 	int		i;
-// 	int		j;
+int			*calc_score(t_s dt, t_q ***groups, t_rooms **ht)
+{
+	int		num_nodes;
+	int		grp_c;
+	t_rooms	*it_ht;
+	t_q		*it_qu;
+	int		i;
+	int		j;
+	int		*grp_score;
 
-// 	i = 0;
-// 	while (it_ht && ft_strcmp(dt.st, it_ht->name))
-// 		it_ht = it_ht->next;
-// 	grp_c = count_start_links(ht, dt.st);
-// 	return(1);
-// }
+	i = 0;
+	num_nodes = 0;
+	while (it_ht && ft_strcmp(dt.st, it_ht->name))
+		it_ht = it_ht->next;
+	grp_c = count_start_links(ht, dt.st);
+	grp_score = (int *)ft_memalloc(sizeof(int) * grp_c);
+	while (i < grp_c)
+		grp_score[i++] = -1;
+	i = 0;
+	while (i < grp_c)
+	{
+		j = 0;
+		num_nodes = 0;
+		while (j <= i)
+		{
+			it_qu = groups[i][j];
+			while (it_qu && ft_strcmp(it_qu->node->name, dt.end))
+				it_qu = 0 * num_nodes++ + it_qu->next;
+			j++;
+		}
+		grp_score[i] = ((dt.ants + num_nodes) % j == 0) ? (dt.ants + num_nodes) / j
+		: ((dt.ants + num_nodes) / j) + 1;
+		i++;
+	}
+	return (grp_score);
+}
+
+void		sort_group(int *grp_score, t_q ***groups, int start_links)
+{
+	int 	i;
+	int		min;
+	int		j;
+	int		count;
+	int		count1;
+	t_q		*swap;
+	t_q		*it_path;
+
+	i = 1;
+	min = 0;
+	while (grp_score[i - 1] != -1 && grp_score[i] != -1)
+	{
+		if (grp_score[i] < grp_score[i - 1])
+			min = i;
+		i++;
+	}
+	i = 0;
+	j = 0;
+	while (i < min)
+	{
+		j = 0;
+		while (j < min - i)
+		{
+			count = 0;
+			count1 = 0;
+			it_path = groups[min][j];
+			while (it_path)
+			{
+				count++;
+				it_path = it_path->next;
+			}
+			it_path = groups[min][j + 1];
+			while (it_path)
+			{
+				count1++;
+				it_path = it_path->next;
+			}
+			if (count > count1)
+			{
+				swap = groups[min][j];
+				groups[min][j] = groups[min][j + 1];
+				groups[min][j + 1] = swap;
+			}
+			j++;
+		}
+		i++;
+	}
+}
 
 int			fill_queue(t_s dt, t_rooms **ht)
 {
@@ -238,6 +312,7 @@ int			fill_queue(t_s dt, t_rooms **ht)
 	t_q		***groups;
 	int		i;
 	int		j;
+	int		*grp_score;
 
 	i = 0;
 	it_ht = ht[hash_name(dt.st)];
@@ -268,6 +343,7 @@ int			fill_queue(t_s dt, t_rooms **ht)
 					// printf("\n");
 					while (j <= i)
 					{
+						printf("[%d %d] ", i, j);
 						// printf("temp->node: %s\n", temp1->node->name);
 						get_paths(temp1->node, dt, &groups[i][j++]);
 						t_q *tmp = groups[i][j-1];
@@ -278,14 +354,27 @@ int			fill_queue(t_s dt, t_rooms **ht)
 						}
 						printf("\n");
 					}
+					printf("\n");
 					break ;
 				}
+				// if (i > 32)
+				// {
+				// 	if (!groups[i][0])
+				// 		printf("%d test\n", i);
+				// }
 				qu = qu->next;
 			}
 			free_queue(&temp);
 			i++;
 		}
-		// calc_score(dt, groups);
+		grp_score = calc_score(dt, groups, ht);
+		// sort_group(grp_score, groups, count_start_links(ht, dt.st));
+		i = 0;
+		while (i < count_start_links(ht, dt.st))
+		{
+			printf("grp[%d]: %d\n", i, grp_score[i]);
+			i++;
+		}
 	}
 	return (0);
 }
