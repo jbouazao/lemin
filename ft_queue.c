@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 11:15:30 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/08 17:52:31 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/09 14:10:09 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,21 +235,27 @@ int			*calc_score(t_s dt, t_q ***groups, t_rooms **ht)
 	grp_c = count_start_links(ht, dt.st);
 	grp_score = (int *)ft_memalloc(sizeof(int) * grp_c);
 	while (i < grp_c)
-		grp_score[i++] = -1;
+		grp_score[i++] = 10000000;
 	i = 0;
 	while (i < grp_c)
 	{
 		j = 0;
 		num_nodes = 0;
-		while (j <= i)
+		while (j <= i)//groups[i][j]
 		{
-			it_qu = groups[i][j];
-			while (it_qu && ft_strcmp(it_qu->node->name, dt.end))
-				it_qu = 0 * num_nodes++ + it_qu->next;
+			if (!groups[i][j])
+				break ;
+			if (groups[i][j])
+			{
+				it_qu = groups[i][j];
+				while (it_qu && ft_strcmp(it_qu->node->name, dt.end))
+					it_qu = 0 * num_nodes++ + it_qu->next;
+			}
 			j++;
+			if (j >= i)
+				grp_score[i] = ((dt.ants + num_nodes) % j == 0) ?
+				(dt.ants + num_nodes) / j : ((dt.ants + num_nodes) / j) + 1;
 		}
-		grp_score[i] = ((dt.ants + num_nodes) % j == 0) ? (dt.ants + num_nodes) / j
-		: ((dt.ants + num_nodes) / j) + 1;
 		i++;
 	}
 	return (grp_score);
@@ -259,36 +265,40 @@ void		sort_group(int *grp_score, t_q ***groups, int start_links)
 {
 	int 	i;
 	int		min;
+	int		min_i;
 	int		j;
 	int		count;
 	int		count1;
 	t_q		*swap;
 	t_q		*it_path;
 
-	i = 1;
-	min = 0;
-	while (grp_score[i - 1] != -1 && grp_score[i] != -1)
+	i = 0;
+	min = 10000000;
+	while (i < start_links - 1)
 	{
-		if (grp_score[i] < grp_score[i - 1])
-			min = i;
+		if (min > grp_score[i])
+		{
+			min = grp_score[i];
+			min_i = i;
+		}
 		i++;
 	}
 	i = 0;
 	j = 0;
-	while (i < min)
+	while (i < min_i)
 	{
 		j = 0;
-		while (j < min - i)
+		while (j < min_i - i)
 		{
 			count = 0;
 			count1 = 0;
-			it_path = groups[min][j];
+			it_path = groups[min_i][j];
 			while (it_path)
 			{
 				count++;
 				it_path = it_path->next;
 			}
-			it_path = groups[min][j + 1];
+			it_path = groups[min_i][j + 1];
 			while (it_path)
 			{
 				count1++;
@@ -296,9 +306,9 @@ void		sort_group(int *grp_score, t_q ***groups, int start_links)
 			}
 			if (count > count1)
 			{
-				swap = groups[min][j];
-				groups[min][j] = groups[min][j + 1];
-				groups[min][j + 1] = swap;
+				swap = groups[min_i][j];
+				groups[min_i][j] = groups[min_i][j + 1];
+				groups[min_i][j + 1] = swap;
 			}
 			j++;
 		}
@@ -368,13 +378,30 @@ int			fill_queue(t_s dt, t_rooms **ht)
 			i++;
 		}
 		grp_score = calc_score(dt, groups, ht);
-		// sort_group(grp_score, groups, count_start_links(ht, dt.st));
+		sort_group(grp_score, groups, count_start_links(ht, dt.st));
 		i = 0;
 		while (i < count_start_links(ht, dt.st))
 		{
 			printf("grp[%d]: %d\n", i, grp_score[i]);
 			i++;
 		}
+		// i = 0;
+		// t_q **gg = groups[3];
+		// while (i < 4)
+		// {
+		// 	if (!gg[i])
+		// 	{
+		// 		printf("\ntest%d\n",i);
+		// 	}
+		// 	t_q *temp = gg[i];
+		// 	while (temp)
+		// 	{
+		// 		printf("%s-", temp->node->name);
+		// 		temp = temp->next;
+		// 	}
+		// 	printf("\n");
+		// 	i++;
+		// }
 	}
 	return (0);
 }
