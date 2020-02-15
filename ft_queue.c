@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 11:15:30 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/09 14:10:09 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/15 15:43:51 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,7 @@ void	add_to_path(t_q **grps, t_rooms *node)
 	it_grps = *grps;
 	path = (t_q *)ft_memalloc(sizeof(t_q));
 	path->node = node;
+	path->occupied = 0;
 	path->node->cap = 1;
 	path->next = NULL;
 	if (!it_grps)
@@ -250,18 +251,23 @@ int			*calc_score(t_s dt, t_q ***groups, t_rooms **ht)
 				it_qu = groups[i][j];
 				while (it_qu && ft_strcmp(it_qu->node->name, dt.end))
 					it_qu = 0 * num_nodes++ + it_qu->next;
+				if (!it_qu)
+					break ;
 			}
 			j++;
-			if (j >= i)
-				grp_score[i] = ((dt.ants + num_nodes) % j == 0) ?
-				(dt.ants + num_nodes) / j : ((dt.ants + num_nodes) / j) + 1;
+		}
+		if (j >= i)
+		{
+			// ft_printf("dt.ants: %d| num_nodes: %d| j: %d\n", dt.ants , num_nodes, j);
+			grp_score[i] = ((dt.ants + num_nodes) % j == 0) ?
+			(dt.ants + num_nodes) / j : ((dt.ants + num_nodes) / j) + 1;
 		}
 		i++;
 	}
 	return (grp_score);
 }
 
-void		sort_group(int *grp_score, t_q ***groups, int start_links)
+int			sort_group(int *grp_score, t_q ***groups, int start_links)
 {
 	int 	i;
 	int		min;
@@ -274,7 +280,7 @@ void		sort_group(int *grp_score, t_q ***groups, int start_links)
 
 	i = 0;
 	min = 10000000;
-	while (i < start_links - 1)
+	while (i < start_links)
 	{
 		if (min > grp_score[i])
 		{
@@ -314,6 +320,167 @@ void		sort_group(int *grp_score, t_q ***groups, int start_links)
 		}
 		i++;
 	}
+	return (min_i);
+}
+
+int			path_size(t_q *path)
+{
+	t_q	*it_qu;
+	int size_path;
+
+	size_path = 0;
+	it_qu = path;
+	while (it_qu)
+	{
+		size_path++;
+		it_qu = it_qu->next;
+	}
+	return (size_path);
+}
+
+void		ant_distri(t_q **paths, int id, int *ant_distro, t_s dt)
+{
+	int		i;
+	int		size_path;
+	int		shortest;
+
+	i = 0;
+	shortest = 0;
+	while (i <= id)
+	{
+		ant_distro[i] = path_size(paths[i]);
+		i++;
+	}
+	while (dt.ants)
+	{
+		shortest = 0;
+		i = 0;
+		while (i <= id)
+		{
+			if (ant_distro[shortest] > ant_distro[i])
+			{
+				shortest = i;
+				break ;
+			}
+			i++;
+		}
+		ant_distro[shortest]++;
+		dt.ants--;
+	}
+}
+
+void		init_ants(t_s dt, int *ant_distr, t_q **start, t_q **paths, int id)
+{
+	int	i; //ants
+	int j; //path
+	int k; //ants dial path
+
+	j = 0;
+	while (j <= id)
+	{
+		if (!(start[j] = (t_q *)ft_memalloc(sizeof(t_q))))
+		{
+			printf("couldnt allocate\n");
+			return ;
+		}
+		start[j]->next = paths[j];
+		j++;
+	}
+	i = 0;
+	j = 0;
+	k = 0;
+	while (i < dt.ants)
+	{
+		if (k == ant_distr[j])
+		{
+			j++;
+			k = 0;
+		}
+		dt.ant[i].arrived = 0;
+		dt.ant[i].pid = j;
+		dt.ant[i].current = start[j];
+		i++;
+		k++;
+	}
+}
+
+int			ants_arrived(t_s dt, t_ants *ants)
+{
+	int	i;
+
+	i = 0;
+	while (i < dt.ants)
+	{
+		if (ants[i].arrived == 0)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int			move_ants(t_s dt, t_q **paths, int id)
+{
+	int		*ant_distr;
+	int		i;
+	t_q		**start;
+
+	if (!(dt.ant = (t_ants *)ft_memalloc(sizeof(t_ants) * dt.ants)))
+	{
+		ft_printf("prob alloc ants\n");
+		return (0);
+	}
+	if (!(ant_distr = (int *)ft_memalloc(sizeof(int) * (id + 1))) ||
+		!(start = (t_q **)ft_memalloc(sizeof(t_q*) * (id + 1))))
+	{
+		ft_printf("prob alloc ants2 or 3\n");
+		return (0);
+	}
+	ant_distri(paths, id, ant_distr, dt);
+	i = 0;
+	while (i <= id)
+	{
+		ant_distr[i] -= path_size(paths[i]);
+		// ft_printf("i: %d, distr: %d\n", i, ant_distr[i]);
+		// can put the function that set the next node from start for every ant
+		i++;
+	}
+	init_ants(dt, ant_distr, start, paths, id);
+	i = 0;
+	// while (i <= id)
+	// {
+	// 	ft_printf("[%d] %s\n", i, start[i]->next->node->name);
+	// 	i++;
+	// }
+	i = 0;
+	// while (i < dt.ants)
+	// {
+	// 	// ft_printf("[%d] arr : %d, id : %d\n", i, dt.ant[i].arrived, dt.ant[i].pid);
+	// 	ft_printf("[%d]: arrived: %d | start: %s | pid: %d\n", i, dt.ant[i].arrived, dt.ant[i].current->next->node->name, dt.ant[i].pid);
+	// 	i++;
+	// }
+	while (!ants_arrived(dt, dt.ant))
+	{
+		i = 0;
+		while (i < dt.ants)
+		{
+			// ft_printf("{%d, %d} ", i + 1, dt.ant[i].arrived);
+			if (!dt.ant[i].arrived)
+				if (dt.ant[i].current->next && !dt.ant[i].current->next->occupied)
+				{
+					dt.ant[i].current->occupied = 0;
+					dt.ant[i].current = dt.ant[i].current->next;
+					if (ft_strcmp(dt.end, dt.ant[i].current->node->name))
+						dt.ant[i].current->occupied = 1;
+					ft_printf("L%d-%s ", i + 1, dt.ant[i].current->node->name);
+					if (!ft_strcmp(dt.end, dt.ant[i].current->node->name))
+						dt.ant[i].arrived = 1;
+				}
+			i++;
+		}
+		// ft_printf("%d", ants_arrived(dt, dt.ant));
+		ft_putendl("");
+	}
+	return (1);
 }
 
 int			fill_queue(t_s dt, t_rooms **ht)
@@ -323,6 +490,7 @@ int			fill_queue(t_s dt, t_rooms **ht)
 	int		i;
 	int		j;
 	int		*grp_score;
+	int		min_i;
 
 	i = 0;
 	it_ht = ht[hash_name(dt.st)];
@@ -353,18 +521,18 @@ int			fill_queue(t_s dt, t_rooms **ht)
 					// printf("\n");
 					while (j <= i)
 					{
-						printf("[%d %d] ", i, j);
+						// printf("[%d %d] ", i, j);
 						// printf("temp->node: %s\n", temp1->node->name);
 						get_paths(temp1->node, dt, &groups[i][j++]);
-						t_q *tmp = groups[i][j-1];
-						while (tmp)
-						{
-							printf("%s-", tmp->node->name);
-							tmp = tmp->next;
-						}
-						printf("\n");
+						// t_q *tmp = groups[i][j-1];
+						// while (tmp)
+						// {
+						// 	printf("%s-", tmp->node->name);
+						// 	tmp = tmp->next;
+						// }
+						// printf("\n");
 					}
-					printf("\n");
+					// printf("\n");
 					break ;
 				}
 				// if (i > 32)
@@ -378,30 +546,29 @@ int			fill_queue(t_s dt, t_rooms **ht)
 			i++;
 		}
 		grp_score = calc_score(dt, groups, ht);
-		sort_group(grp_score, groups, count_start_links(ht, dt.st));
-		i = 0;
-		while (i < count_start_links(ht, dt.st))
-		{
-			printf("grp[%d]: %d\n", i, grp_score[i]);
-			i++;
-		}
+		min_i = sort_group(grp_score, groups, count_start_links(ht, dt.st));
 		// i = 0;
-		// t_q **gg = groups[3];
-		// while (i < 4)
+		// while (i < count_start_links(ht, dt.st))
 		// {
-		// 	if (!gg[i])
-		// 	{
-		// 		printf("\ntest%d\n",i);
-		// 	}
-		// 	t_q *temp = gg[i];
-		// 	while (temp)
-		// 	{
-		// 		printf("%s-", temp->node->name);
-		// 		temp = temp->next;
-		// 	}
-		// 	printf("\n");
+		// 	printf("grp[%d]: %d\n", i, grp_score[i]);
 		// 	i++;
 		// }
+		// printf("\n%d\n", min_i);
+		i = 0;
+		t_q **gg = groups[min_i];
+		while (i <= min_i)
+		{
+			t_q *temp = gg[i];
+			ft_printf("[%d]: ", i);
+			while (temp)
+			{
+				ft_printf("%s-", temp->node->name);
+				temp = temp->next;
+			}
+			ft_printf("\n");
+			i++;
+		}
+		move_ants(dt, groups[min_i], min_i);
 	}
 	return (0);
 }

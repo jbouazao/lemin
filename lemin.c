@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:31 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/08 12:47:47 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/13 13:44:14 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ int     main(void)
 		return (0);
 	//-------------------------------------
 	fill_queue(dt, ht);
+	
 	// tmp_ptr = sch_inht(dt.end, ht);
 
 	// while (tmp_ptr)

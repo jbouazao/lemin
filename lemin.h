@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:35 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/04 16:59:31 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/15 15:25:07 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,15 @@
 
 typedef struct		s_q
 {
-	// char			*name;//should remove this if worked
 	struct s_rooms	*node;
+	int				occupied;
 	struct s_q		*next;
 }					t_q;
 
 typedef struct		s_s
 {
 	int				ants;
+	struct s_ants	*ant;
 	char			*st;
 	char			*end;
 }					t_s;
@@ -51,6 +52,14 @@ typedef struct		s_links
 	int				flow;
 	struct s_links	*next;
 }					t_links;
+
+typedef struct		s_ants
+{
+	int				arrived;
+	int				pid;
+	struct s_q		*current;
+}					t_ants;
+
 
 /*
 ** LIST
