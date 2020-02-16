@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/12 11:15:30 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/15 15:43:51 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/16 15:10:13 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void		add_to_queue(t_q **qu, t_links *it_lnk)
 		it_qu->next = new_node;
 }
 
-int			add_links_to_queue(t_q **qu, t_rooms *node, t_rooms **ht, t_s dt)
+int			add_links_to_queue(t_q **qu, t_rooms *node, t_s dt)
 {
 	t_links	*it_lnk;
 	t_rooms	*tmp_node;
@@ -223,7 +223,6 @@ int			*calc_score(t_s dt, t_q ***groups, t_rooms **ht)
 {
 	int		num_nodes;
 	int		grp_c;
-	t_rooms	*it_ht;
 	t_q		*it_qu;
 	int		i;
 	int		j;
@@ -231,8 +230,6 @@ int			*calc_score(t_s dt, t_q ***groups, t_rooms **ht)
 
 	i = 0;
 	num_nodes = 0;
-	while (it_ht && ft_strcmp(dt.st, it_ht->name))
-		it_ht = it_ht->next;
 	grp_c = count_start_links(ht, dt.st);
 	grp_score = (int *)ft_memalloc(sizeof(int) * grp_c);
 	while (i < grp_c)
@@ -341,7 +338,6 @@ int			path_size(t_q *path)
 void		ant_distri(t_q **paths, int id, int *ant_distro, t_s dt)
 {
 	int		i;
-	int		size_path;
 	int		shortest;
 
 	i = 0;
@@ -508,7 +504,7 @@ int			fill_queue(t_s dt, t_rooms **ht)
 			it_ht->vstd = 1;
 			while (qu)
 			{
-				if (add_links_to_queue(&qu, qu->node, ht, dt))
+				if (add_links_to_queue(&qu, qu->node, dt))
 				{
 					j = 0;
 					reini_rms(ht);
@@ -554,20 +550,20 @@ int			fill_queue(t_s dt, t_rooms **ht)
 		// 	i++;
 		// }
 		// printf("\n%d\n", min_i);
-		i = 0;
-		t_q **gg = groups[min_i];
-		while (i <= min_i)
-		{
-			t_q *temp = gg[i];
-			ft_printf("[%d]: ", i);
-			while (temp)
-			{
-				ft_printf("%s-", temp->node->name);
-				temp = temp->next;
-			}
-			ft_printf("\n");
-			i++;
-		}
+		// i = 0;
+		// t_q **gg = groups[min_i];
+		// while (i <= min_i)
+		// {
+		// 	t_q *temp = gg[i];
+		// 	ft_printf("[%d]: ", i);
+		// 	while (temp)
+		// 	{
+		// 		ft_printf("%s-", temp->node->name);
+		// 		temp = temp->next;
+		// 	}
+		// 	ft_printf("\n");
+		// 	i++;
+		// }
 		move_ants(dt, groups[min_i], min_i);
 	}
 	return (0);
