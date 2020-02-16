@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/01 11:45:31 by jbouazao          #+#    #+#             */
-/*   Updated: 2020/02/13 13:44:14 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/16 15:17:44 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		check_num_ants(char *line, t_s *dt)
 {
 	if (get_next_line(0, &line) > 0)
 	{
-		if (!(line[0] == '\0') && is_num(line))
+		if (line[0] != '\0' && is_num(line) && line[0] != '0')
 			dt->ants = ft_atoi(line);
 		else
 		{
@@ -59,10 +59,15 @@ t_rooms	**get_rms_lnks(char *line, t_rooms **rm, t_s *dt)
 			c = line[2];
 			ft_strdel(&line);
 			get_next_line(0, &line);
-			if (c == 's')
+			if (c == 's' && !dt->st)
 				dt->st = valid_room(line);
-			else
+			else if (c == 'e' && !dt->end)
 				dt->end = valid_room(line);
+			else
+			{
+				ft_printf("duplicate start or end\n");
+				return (NULL);
+			}
 			if (!add_to_list(rm, line))
 				return (ht);
 		}
@@ -92,7 +97,10 @@ t_rooms	**get_rms_lnks(char *line, t_rooms **rm, t_s *dt)
 			//------------------------
 		}
 		else
+		{
+			// print_hash_tab(ht);
 			return (ht);
+		}
 		ft_strdel(&line);
 	}
 	return (ht);
@@ -132,13 +140,18 @@ int     main(void)
 	char    *line;
 	t_s     dt;
 	t_rooms	**ht;
-	t_rooms	*tmp_ptr;
+	// t_rooms	*tmp_ptr;
 
 	line = NULL;
 	init_t_s(&dt);
 	if (!(ht = get_data(&dt, line)))
 		return (0);
 	//-------------------------------------
+	if (!dt.st || !dt.end)
+	{
+		ft_printf("inexistant start or end\n");
+		return (0);
+	}
 	fill_queue(dt, ht);
 	
 	// tmp_ptr = sch_inht(dt.end, ht);

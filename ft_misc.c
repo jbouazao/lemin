@@ -6,7 +6,7 @@
 /*   By: jbouazao <jbouazao@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/03 15:22:32 by yjouaoud          #+#    #+#             */
-/*   Updated: 2020/02/08 12:47:47 by jbouazao         ###   ########.fr       */
+/*   Updated: 2020/02/16 14:54:22 by jbouazao         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,27 +19,27 @@ char			*valid_room(char *line)
 	char	*ret;
 
 	i = 0;
-	if (line == NULL || line[0] == 'L' || line[0] == '#')
+	if (line == NULL || line[0] == 'L' || line[0] == '#' || line[0] == '\0' ||
+		line[0] == ' ' || line[0] == '\t')
 	{
-		ft_printf("error because of 'L' or line is NULL\n");
+		ft_printf("error because of 'L' or line is NULL or line is empty\n");
 		return (NULL);
 	}
 	while (line[i] && line[i] != '-' && line[i] != ' ')
 		i++;
-	ret = ft_strsub(line, 0, i);
-	i += (line[i] == ' ') ? 1 : 0;
+	if (!(ret = ft_strsub(line, 0, i)) && line[i] != ' ')
+		return (NULL);
+	i++;
 	while (line[i] && ft_isdigit(line[i]))
 		i++;
-	i += (line[i] == ' ') ? 1 : 0;
+	if (line[i++] != ' ')
+		return (NULL);
 	while (line[i] && ft_isdigit(line[i]))
 		i++;
 	if (ft_strlen(line) == (size_t)i)
 		return (ret);
-	else
-	{
-		ft_strdel(&ret);
-		return (NULL);
-	}
+	ft_strdel(&ret);
+	return (NULL);
 }
 
 int				hash_name(char *name)
@@ -103,7 +103,6 @@ void			print_hash_tab(t_rooms **hash_tab)
 {
 	int		i;
 	t_rooms	*temp_hash_tab;
-	t_links	*temp_links;
 
 	i = 0;
 	while (i < COMPLEX)
@@ -143,8 +142,11 @@ int		link_is_valid(char *line)
 		ft_printf("error because of 'L' or line is NULL\n");
 		return (0);
 	}
-	if (line[0] == '-' || line[(int)ft_strlen(line) - 1] == '-')
+	if (line[(int)ft_strlen(line) - 1] == '-' || line[0] == '\0')
+	{
+		ft_printf("hello\n");
 		return (0);
+	}
 	while (line[i])
 	{
 		count += (line[i] == '-') ? 1 : 0;
@@ -153,11 +155,7 @@ int		link_is_valid(char *line)
 	}
 	if (count == 1)
 		return (1);
-	else
-	{
-		printf("test\n");
-		return (0);
-	}
+	return (0);
 }
 
 void	add_link(t_rooms **element1, t_rooms **element2)
@@ -214,7 +212,10 @@ int		parse_link(t_rooms **hash_tab, char *line)
 			return (0);
 	}
 	if (it_hash1 == NULL || it_hash2 == NULL)
+	{
+		ft_printf("error (couldn't find the link)\n");
 		return (0);
+	}
 	return (1);
 }
 //see here
@@ -224,11 +225,15 @@ int		get_links(t_rooms **hash_tab, char **line)
 	{
 		if (!(parse_link(hash_tab, *line)))
 		{
+			printf("parselink\n");
 			return (0);
 		}
 	}
 	else
+	{
+		printf("error get_links invalid link\n");
 		return (0);
+	}
 	ft_strdel(line);
 	while (get_next_line(0, line) > 0)
 	{
@@ -244,9 +249,9 @@ int		get_links(t_rooms **hash_tab, char **line)
 		}
 		else
 		{
-			printf("%s", *line);
+			printf("error get_links invalid link\n");
 			return (0);
-	}
+		}
 		ft_strdel(line);
 	}
 	//should free the line
